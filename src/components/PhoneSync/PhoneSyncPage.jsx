@@ -11,17 +11,33 @@ export default function PhoneSyncPage() {
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [dateFilter, setDateFilter] = useState('all');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     const isWithinDateFilter = (timestamp) => {
         if (dateFilter === 'all' || !timestamp) return true;
         const d = new Date(parseInt(timestamp));
         if (isNaN(d.getTime())) return true;
         
-        const today = new Date();
-        today.setHours(0,0,0,0);
-        
         const itemDate = new Date(d);
         itemDate.setHours(0,0,0,0);
+        
+        if (dateFilter === 'custom') {
+            if (startDate) {
+                const start = new Date(startDate);
+                start.setHours(0,0,0,0);
+                if (itemDate.getTime() < start.getTime()) return false;
+            }
+            if (endDate) {
+                const end = new Date(endDate);
+                end.setHours(23,59,59,999);
+                if (itemDate.getTime() > end.getTime()) return false;
+            }
+            return true;
+        }
+        
+        const today = new Date();
+        today.setHours(0,0,0,0);
         
         if (dateFilter === 'today') return itemDate.getTime() === today.getTime();
         
@@ -191,23 +207,60 @@ export default function PhoneSyncPage() {
                             }}
                         />
                         {(activeTab === 'calls' || activeTab === 'sms') && (
-                            <select 
-                                value={dateFilter}
-                                onChange={(e) => setDateFilter(e.target.value)}
-                                style={{
-                                    background: 'rgba(255,255,255,0.05)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
-                                    color: 'white',
-                                    padding: '10px 16px',
-                                    borderRadius: '8px',
-                                    outline: 'none',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                <option value="all" style={{ background: '#1e1e1e' }}>All Time</option>
-                                <option value="today" style={{ background: '#1e1e1e' }}>Today</option>
-                                <option value="yesterday" style={{ background: '#1e1e1e' }}>Yesterday</option>
-                            </select>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                <select 
+                                    value={dateFilter}
+                                    onChange={(e) => setDateFilter(e.target.value)}
+                                    style={{
+                                        background: 'rgba(255,255,255,0.05)',
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        color: 'white',
+                                        padding: '10px 16px',
+                                        borderRadius: '8px',
+                                        outline: 'none',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    <option value="all" style={{ background: '#1e1e1e' }}>All Time</option>
+                                    <option value="today" style={{ background: '#1e1e1e' }}>Today</option>
+                                    <option value="yesterday" style={{ background: '#1e1e1e' }}>Yesterday</option>
+                                    <option value="custom" style={{ background: '#1e1e1e' }}>Custom Range...</option>
+                                </select>
+
+                                {dateFilter === 'custom' && (
+                                    <>
+                                        <input 
+                                            type="date"
+                                            value={startDate}
+                                            onChange={e => setStartDate(e.target.value)}
+                                            style={{
+                                                background: 'rgba(255,255,255,0.05)',
+                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                color: 'white',
+                                                padding: '9px 12px',
+                                                borderRadius: '8px',
+                                                outline: 'none',
+                                                colorScheme: 'dark'
+                                            }}
+                                        />
+                                        <span style={{ color: 'rgba(255,255,255,0.3)' }}>to</span>
+                                        <input 
+                                            type="date"
+                                            value={endDate}
+                                            onChange={e => setEndDate(e.target.value)}
+                                            style={{
+                                                background: 'rgba(255,255,255,0.05)',
+                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                color: 'white',
+                                                padding: '9px 12px',
+                                                borderRadius: '8px',
+                                                outline: 'none',
+                                                colorScheme: 'dark'
+                                            }}
+                                        />
+                                    </>
+                                )}
+                            </div>
                         )}
                     </div>
                 </div>
