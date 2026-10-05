@@ -17,7 +17,7 @@ export default function PhoneSyncPage() {
             const [callsRes, contactsRes, smsRes] = await Promise.all([
                 supabase.from('phone_call_logs').select('*').order('timestamp', { ascending: false }).limit(200),
                 supabase.from('phone_contacts').select('*').order('display_name', { ascending: true }),
-                supabase.from('phone_sms').select('*').order('timestamp', { ascending: false }).limit(200).catch(() => ({ data: [] }))
+                supabase.from('phone_sms').select('*').order('timestamp', { ascending: false }).limit(200)
             ]);
 
             if (callsRes.error) throw callsRes.error;
