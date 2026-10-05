@@ -5,7 +5,7 @@ import {
     Home, Dna, Sparkles, Mail, BookOpen, FileText, PenTool,
     Heart, Users, Music, Tv, Gamepad2, Diamond, Image,
     Library, Package, Star, KeyRound, Settings, Wallet, Brain,
-    Flame, User, Bell, Info, X, Film, Radio, MonitorPlay, Link2, Clipboard
+    Flame, User, Bell, Info, X, Film, Radio, MonitorPlay, Link2, Clipboard, Smartphone
 } from 'lucide-react';
 import LofiRadio from '../Arcade/LofiRadio';
 import './SmartActions.css';
@@ -25,6 +25,7 @@ const ALL_ITEMS = [
     { id: 'musicplayer',    Icon: Music, label: 'Music Player',   keywords: 'music songs audio player playlist' },
     { id: 'videos',         Icon: Tv, label: 'YouTube',        keywords: 'youtube videos watch' },
     { id: 'twitch',         Icon: Gamepad2, label: 'Twitch',         keywords: 'twitch streams gaming live' },
+    { id: 'phonesync',      Icon: Smartphone, label: 'Phone Sync',     keywords: 'phone sync calls contacts sms' },
 
     { id: 'vault',          Icon: Diamond, label: 'Vault',           keywords: 'vault media private photos', isRed: true },
     { id: 'media',          Icon: Image, label: 'Media Library',  keywords: 'media library images gallery' },
