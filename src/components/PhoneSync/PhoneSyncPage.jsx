@@ -154,8 +154,9 @@ export default function PhoneSyncPage() {
                                         alignItems: 'center'
                                     }}>
                                         <div>
-                                            <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
-                                                {call.cached_name || call.number || 'Unknown'}
+                                            <div style={{ fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                                                <span>{call.cached_name || 'Unknown Contact'}</span>
+                                                {call.number && <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', fontWeight: 'normal' }}>{call.number}</span>}
                                             </div>
                                             <div style={{ display: 'flex', gap: '12px', color: 'rgba(255,255,255,0.5)', fontSize: '14px', marginTop: '4px' }}>
                                                 <span style={{ color: call.type === '1' ? '#3b82f6' : call.type === '2' ? '#22c55e' : call.type === '3' ? '#ef4444' : 'inherit' }}>
