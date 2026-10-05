@@ -16,7 +16,13 @@ export default function PhoneSyncPage() {
 
     const isWithinDateFilter = (timestamp) => {
         if (dateFilter === 'all' || !timestamp) return true;
-        const d = new Date(parseInt(timestamp));
+        let d;
+        // Try parsing as integer first (epoch)
+        if (!isNaN(timestamp) && !isNaN(parseInt(timestamp))) {
+            d = new Date(parseInt(timestamp));
+        } else {
+            d = new Date(timestamp);
+        }
         if (isNaN(d.getTime())) return true;
         
         const itemDate = new Date(d);
