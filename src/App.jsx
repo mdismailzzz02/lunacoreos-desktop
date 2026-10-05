@@ -25,6 +25,7 @@ import NotificationsPage from './components/Notifications/NotificationsPage';
 import InformationPage from './components/Information/InformationPage';
 import MusicPlayerPage from './components/MusicPlayer/MusicPlayerPage';
 import LifeGoalsPage from './components/LifeGoals/LifeGoalsPage';
+import PhoneSyncPage from './components/PhoneSync/PhoneSyncPage';
 
 import SettingsPage from './components/Settings/SettingsPage';
 import PasswordsPage from './components/Passwords/PasswordsPage';
@@ -592,6 +593,7 @@ export default function App() {
             case 'information': return <InformationPage />;
             case 'musicplayer': return <MusicPlayerPage />;
             case 'lifegoals': return <LifeGoalsPage />;
+            case 'phonesync': return <PhoneSyncPage />;
 
 
             default:

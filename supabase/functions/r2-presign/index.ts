@@ -25,7 +25,7 @@ function getR2Client(): { client: S3Client; bucket: string } {
     endpoint,
     credentials: { accessKeyId, secretAccessKey },
     // Disable unnecessary checks for faster signing
-    forcePathStyle: false,
+    forcePathStyle: true,
   });
   _bucket = bucket;
   return { client: _r2Client, bucket: _bucket };

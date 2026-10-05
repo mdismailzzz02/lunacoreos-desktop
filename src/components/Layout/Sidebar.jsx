@@ -5,7 +5,7 @@ import {
     Home, Dna, Sparkles, Mail, BookOpen, FileText, PenTool,
     Heart, Users, Music, Play, Pause, SkipForward, Tv,
     Gamepad2, Diamond, Image, Library, Package, Star,
-    KeyRound, Settings, Disc, Film, Link2, Clipboard
+    KeyRound, Settings, Disc, Film, Link2, Clipboard, Smartphone
 } from 'lucide-react';
 
 const TABS = [
@@ -24,6 +24,7 @@ const TABS = [
     { id: 'musicplayer', Icon: Music, label: 'Music Player' },
     { id: 'videos', Icon: Tv, label: 'YouTube' },
     { id: 'twitch', Icon: Gamepad2, label: 'Twitch' },
+    { id: 'phonesync', Icon: Smartphone, label: 'Phone Sync' },
 
     { id: 'vault', Icon: Diamond, label: 'Vault', isRed: true },
     { id: 'media', Icon: Image, label: 'Media Library' },
