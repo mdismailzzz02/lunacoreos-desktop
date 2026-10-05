@@ -9,6 +9,50 @@ export default function PhoneSyncPage() {
     const [sms, setSms] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [dateFilter, setDateFilter] = useState('all');
+
+    const isWithinDateFilter = (timestamp) => {
+        if (dateFilter === 'all' || !timestamp) return true;
+        const d = new Date(parseInt(timestamp));
+        if (isNaN(d.getTime())) return true;
+        
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        
+        const itemDate = new Date(d);
+        itemDate.setHours(0,0,0,0);
+        
+        if (dateFilter === 'today') return itemDate.getTime() === today.getTime();
+        
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        if (dateFilter === 'yesterday') return itemDate.getTime() === yesterday.getTime();
+        
+        return true;
+    };
+
+    const getFilteredCalls = () => calls.filter(c => {
+        if (!isWithinDateFilter(c.timestamp)) return false;
+        if (!searchQuery) return true;
+        const q = searchQuery.toLowerCase();
+        return (c.cached_name || '').toLowerCase().includes(q) || (c.number || '').toLowerCase().includes(q);
+    });
+
+    const getFilteredContacts = () => contacts.filter(c => {
+        if (!searchQuery) return true;
+        const q = searchQuery.toLowerCase();
+        const matchesName = (c.display_name || '').toLowerCase().includes(q);
+        const matchesPhone = (c.phones || []).some(p => p.toLowerCase().includes(q));
+        return matchesName || matchesPhone;
+    });
+
+    const getFilteredSms = () => sms.filter(s => {
+        if (!isWithinDateFilter(s.timestamp || s.date)) return false;
+        if (!searchQuery) return true;
+        const q = searchQuery.toLowerCase();
+        return (s.address || '').toLowerCase().includes(q) || (s.body || '').toLowerCase().includes(q);
+    });
 
     const loadData = async () => {
         setLoading(true);
@@ -91,42 +135,81 @@ export default function PhoneSyncPage() {
                     </button>
                 </div>
 
-                <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
-                    {[
-                        { id: 'calls', icon: Phone, label: 'Call Logs', count: calls.length },
-                        { id: 'contacts', icon: Users, label: 'Contacts', count: contacts.length },
-                        { id: 'sms', icon: MessageSquare, label: 'Messages', count: sms.length }
-                    ].map(t => (
-                        <button
-                            key={t.id}
-                            onClick={() => setActiveTab(t.id)}
+                <div style={{ display: 'flex', gap: '16px', marginTop: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                        {[
+                            { id: 'calls', icon: Phone, label: 'Call Logs', count: calls.length },
+                            { id: 'contacts', icon: Users, label: 'Contacts', count: contacts.length },
+                            { id: 'sms', icon: MessageSquare, label: 'Messages', count: sms.length }
+                        ].map(t => (
+                            <button
+                                key={t.id}
+                                onClick={() => setActiveTab(t.id)}
+                                style={{
+                                    background: activeTab === t.id ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
+                                    color: activeTab === t.id ? '#3b82f6' : 'rgba(255,255,255,0.6)',
+                                    border: `1px solid ${activeTab === t.id ? 'rgba(59, 130, 246, 0.4)' : 'rgba(255,255,255,0.1)'}`,
+                                    padding: '10px 20px',
+                                    borderRadius: '8px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s',
+                                    fontWeight: activeTab === t.id ? 'bold' : 'normal'
+                                }}
+                            >
+                                <t.icon size={18} />
+                                {t.label}
+                                <span style={{ 
+                                    background: activeTab === t.id ? 'rgba(59, 130, 246, 0.3)' : 'rgba(255,255,255,0.1)',
+                                    padding: '2px 8px', 
+                                    borderRadius: '12px', 
+                                    fontSize: '12px',
+                                    marginLeft: '4px'
+                                }}>
+                                    {t.count}
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+
+                    <div style={{ flex: 1, display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                        <input 
+                            type="text" 
+                            placeholder="Search..." 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                             style={{
-                                background: activeTab === t.id ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
-                                color: activeTab === t.id ? '#3b82f6' : 'rgba(255,255,255,0.6)',
-                                border: `1px solid ${activeTab === t.id ? 'rgba(59, 130, 246, 0.4)' : 'rgba(255,255,255,0.1)'}`,
-                                padding: '10px 20px',
+                                background: 'rgba(255,255,255,0.05)',
+                                border: '1px solid rgba(255,255,255,0.1)',
+                                color: 'white',
+                                padding: '10px 16px',
                                 borderRadius: '8px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s',
-                                fontWeight: activeTab === t.id ? 'bold' : 'normal'
+                                outline: 'none',
+                                minWidth: '200px'
                             }}
-                        >
-                            <t.icon size={18} />
-                            {t.label}
-                            <span style={{ 
-                                background: activeTab === t.id ? 'rgba(59, 130, 246, 0.3)' : 'rgba(255,255,255,0.1)',
-                                padding: '2px 8px', 
-                                borderRadius: '12px', 
-                                fontSize: '12px',
-                                marginLeft: '4px'
-                            }}>
-                                {t.count}
-                            </span>
-                        </button>
-                    ))}
+                        />
+                        {(activeTab === 'calls' || activeTab === 'sms') && (
+                            <select 
+                                value={dateFilter}
+                                onChange={(e) => setDateFilter(e.target.value)}
+                                style={{
+                                    background: 'rgba(255,255,255,0.05)',
+                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    color: 'white',
+                                    padding: '10px 16px',
+                                    borderRadius: '8px',
+                                    outline: 'none',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                <option value="all" style={{ background: '#1e1e1e' }}>All Time</option>
+                                <option value="today" style={{ background: '#1e1e1e' }}>Today</option>
+                                <option value="yesterday" style={{ background: '#1e1e1e' }}>Yesterday</option>
+                            </select>
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -143,7 +226,7 @@ export default function PhoneSyncPage() {
                     <>
                         {activeTab === 'calls' && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                {calls.map(call => (
+                                {getFilteredCalls().map(call => (
                                     <div key={call.id} style={{ 
                                         background: 'rgba(255,255,255,0.03)', 
                                         border: '1px solid rgba(255,255,255,0.05)',
@@ -177,7 +260,7 @@ export default function PhoneSyncPage() {
 
                         {activeTab === 'contacts' && (
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
-                                {contacts.map(contact => (
+                                {getFilteredContacts().map(contact => (
                                     <div key={contact.id} style={{ 
                                         background: 'rgba(255,255,255,0.03)', 
                                         border: '1px solid rgba(255,255,255,0.05)',
@@ -216,7 +299,7 @@ export default function PhoneSyncPage() {
 
                         {activeTab === 'sms' && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                {sms.map(msg => (
+                                {getFilteredSms().map(msg => (
                                     <div key={msg.id || msg.msg_id} style={{ 
                                         background: 'rgba(255,255,255,0.03)', 
                                         border: '1px solid rgba(255,255,255,0.05)',
