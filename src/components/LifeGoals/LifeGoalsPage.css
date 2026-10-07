@@ -963,4 +963,276 @@
         padding: 10px 12px;
         font-size: 0.82rem;
     }
+
+    .fa-snapshot-strip {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .fa-quick-grid {
+        grid-template-columns: 1fr;
+    }
 }
+
+/* ═══════ FINANCIAL ADVISOR ═══════ */
+
+.fa-advisor {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-bottom: 2rem;
+    animation: lgFadeUp 0.3s ease both;
+}
+
+/* Snapshot Strip */
+.fa-snapshot-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.fa-snapshot-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.fa-snapshot-card:hover {
+    border-color: rgba(var(--accent-rgb), 0.2);
+    background: linear-gradient(160deg, rgba(var(--accent-rgb), 0.05) 0%, rgba(255,255,255,0.01) 100%);
+}
+
+.fa-snapshot-card svg {
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.fa-snap-label {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.fa-snap-value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-top: 2px;
+    letter-spacing: -0.01em;
+}
+
+.fa-skeleton-card {
+    height: 68px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    animation: lgPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes lgPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+}
+
+/* Quick Prompts */
+.fa-quick-section {
+    background: linear-gradient(160deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 20px;
+    padding: 1.5rem;
+}
+
+.fa-quick-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.fa-quick-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.fa-quick-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    text-align: left;
+}
+
+.fa-quick-btn:hover {
+    background: rgba(var(--accent-rgb), 0.08);
+    border-color: rgba(var(--accent-rgb), 0.2);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+}
+
+.fa-quick-btn svg {
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+/* Chat Area */
+.fa-chat-area {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-height: 55vh;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.fa-chat-area::-webkit-scrollbar {
+    width: 4px;
+}
+
+.fa-chat-area::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+.fa-chat-bubble {
+    padding: 16px 20px;
+    border-radius: 16px;
+    animation: lgFadeUp 0.25s ease both;
+}
+
+.fa-chat-bubble.user {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    margin-left: 40px;
+}
+
+.fa-chat-bubble.assistant {
+    background: linear-gradient(160deg, rgba(var(--accent-rgb), 0.06) 0%, rgba(var(--accent-rgb), 0.02) 100%);
+    border: 1px solid rgba(var(--accent-rgb), 0.12);
+    border-left: 3px solid var(--accent);
+}
+
+.fa-bubble-header {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+}
+
+.fa-bubble-content {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--text-primary);
+    word-wrap: break-word;
+}
+
+.fa-bubble-content strong {
+    color: var(--accent);
+}
+
+/* Typing animation */
+.fa-typing {
+    display: flex;
+    gap: 5px;
+    padding: 4px 0;
+}
+
+.fa-typing span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.4;
+    animation: faTypeDot 1.4s ease-in-out infinite;
+}
+
+.fa-typing span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.fa-typing span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes faTypeDot {
+    0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1.1); }
+}
+
+    /* Input Bar */
+    .fa-input-bar {
+        display: flex;
+        gap: 10px;
+        position: sticky;
+        bottom: 0;
+        padding-top: 10px;
+        background: transparent;
+    }
+
+    /* Markdown Styling inside Chat Bubbles */
+    .ai-markdown-content h1, 
+    .ai-markdown-content h2, 
+    .ai-markdown-content h3 {
+        margin-top: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+    }
+    .ai-markdown-content p {
+        margin-bottom: 1rem;
+    }
+    .ai-markdown-content ul, 
+    .ai-markdown-content ol {
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+    }
+    .ai-markdown-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        background: rgba(255,255,255,0.03);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .ai-markdown-content th, 
+    .ai-markdown-content td {
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .ai-markdown-content th {
+        background: rgba(0,0,0,0.2);
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+    }
+    .ai-markdown-content tr:last-child td {
+        border-bottom: none;
+    }
+    .ai-markdown-content blockquote {
+        margin: 1rem 0;
+        padding: 0.8rem 1rem;
+        border-left: 4px solid var(--accent);
+        background: rgba(var(--accent-rgb), 0.1);
+        border-radius: 0 8px 8px 0;
+        font-style: italic;
+    }
+

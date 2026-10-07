@@ -2792,6 +2792,16 @@ export const getFinancialContext = async () => {
     return { accounts, budgets, goals };
 };
 
+// ─── Phone SMS ────────────────────────────────────────────────
+export const getRecentSms = async (limit = 30) => {
+    const { data, error } = await supabase.from('phone_sms')
+        .select('*')
+        .order('timestamp', { ascending: false })
+        .limit(limit);
+    if (error) throw error;
+    return data;
+};
+
 // --- AI GLOBAL CONTEXT PIPELINE ---
 
 export const getGlobalAiContext = async () => {
@@ -2809,7 +2819,8 @@ export const getGlobalAiContext = async () => {
             studyNotesRes,
             writingRes,
             whoamiRes,
-            yearlyRes
+            yearlyRes,
+            smsRes
         ] = await Promise.all([
             getEntries({ limit: 7 }),
             getTodos({ status: 'pending' }),
@@ -2823,7 +2834,8 @@ export const getGlobalAiContext = async () => {
             getStudyNotes(),
             getWritings(),
             getWhoAmI(),
-            getYearlyReviews()
+            getYearlyReviews(),
+            getRecentSms()
         ]);
 
         return {
@@ -2839,7 +2851,8 @@ export const getGlobalAiContext = async () => {
             studyNotes: (studyNotesRes || []).slice(0, 15).map(n => ({ title: n.title, tags: n.tags, category: n.category })),
             writing: (writingRes || []).slice(0, 15).map(w => ({ title: w.title, status: w.status })),
             whoami: whoamiRes || [],
-            yearlyReview: (yearlyRes || []).slice(0, 2)
+            yearlyReview: (yearlyRes || []).slice(0, 2),
+            sms: (smsRes || []).slice(0, 20)
         };
     } catch (e) {
         console.error("Failed to fetch global AI context:", e);

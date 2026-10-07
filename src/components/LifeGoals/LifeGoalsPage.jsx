@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Target, Brain, History, Plus, CheckCircle2, Archive, Flame, AlertCircle } from 'lucide-react';
+import { Target, Brain, History, Plus, CheckCircle2, Archive, Flame, AlertCircle, DollarSign } from 'lucide-react';
 import GoalCard from './GoalCard';
 import GoalModal from './GoalModal';
 import DecisionAnalyzer from './DecisionAnalyzer';
+import FinancialAdvisor from './FinancialAdvisor';
 import { getLifeGoals, createLifeGoal, updateLifeGoal, deleteLifeGoal, getDecisionAnalyses } from '../../services/api';
 import './LifeGoalsPage.css';
 
@@ -10,6 +11,7 @@ const TABS = [
     { id: 'goals', label: 'My Goals', icon: Target },
     { id: 'analyzer', label: 'AI Analyzer', icon: Brain },
     { id: 'history', label: 'Past Decisions', icon: History },
+    { id: 'finance', label: 'Financial Advice', icon: DollarSign },
 ];
 
 export default function LifeGoalsPage() {
@@ -258,6 +260,11 @@ export default function LifeGoalsPage() {
                             ))
                         )}
                     </div>
+                </div>
+
+                {/* ════ FINANCIAL ADVICE TAB ════ */}
+                <div style={{ display: activeTab === 'finance' ? 'block' : 'none' }}>
+                    <FinancialAdvisor />
                 </div>
             </div>
 

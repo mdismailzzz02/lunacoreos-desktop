@@ -100,6 +100,9 @@ ${globalContext.delegation.length ? globalContext.delegation.map(d => `- (Delega
 **Current Consumption & Knowledge (Recent):**
 Reading/Watching: ${[...globalContext.bookmarks, ...globalContext.readingList, ...globalContext.watchlist].slice(0, 10).map(i => i.title).join(', ') || 'None'}
 Studying/Writing: ${[...globalContext.studyNotes, ...globalContext.writing].slice(0, 10).map(i => i.title).join(', ') || 'None'}
+
+**Recent SMS Messages:**
+${globalContext.sms?.length ? globalContext.sms.map(s => `- [${s.type === '1' ? 'Received' : 'Sent'}] ${s.address}: ${(s.body || '').substring(0, 150)}`).join('\n') : 'None'}
 -------------------------------------------
         `;
     }
@@ -204,6 +207,9 @@ ${globalContext.delegation.length ? globalContext.delegation.map(d => `- (Delega
 **Current Consumption & Knowledge (Recent):**
 Reading/Watching: ${[...globalContext.bookmarks, ...globalContext.readingList, ...globalContext.watchlist].slice(0, 10).map(i => i.title).join(', ') || 'None'}
 Studying/Writing: ${[...globalContext.studyNotes, ...globalContext.writing].slice(0, 10).map(i => i.title).join(', ') || 'None'}
+
+**Recent SMS Messages:**
+${globalContext.sms?.length ? globalContext.sms.map(s => `- [${s.type === '1' ? 'Received' : 'Sent'}] ${s.address}: ${(s.body || '').substring(0, 150)}`).join('\n') : 'None'}
 -------------------------------------------
         `;
     }
@@ -234,6 +240,86 @@ Respond directly, concisely, and strictly in markdown format. Do not use JSON. D
             model: 'openai/gpt-oss-120b',
             messages: [{ role: 'user', content: prompt }],
             temperature: 0.7
+        })
+    });
+
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error?.message || 'Groq API Error');
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content;
+}
+
+export async function askFinancialAdvice(apiKey, question, globalContext = null, conversationHistory = '') {
+    if (!apiKey) throw new Error('Groq API Key missing');
+
+    let contextBlock = 'No financial context available.';
+    if (globalContext) {
+        contextBlock = `
+--- USER'S COMPLETE FINANCIAL & LIFE CONTEXT ---
+**Financial Accounts:**
+${globalContext.finance?.accounts?.length ? globalContext.finance.accounts.map(a => `- ${a.name} (${a.type}): ${a.current_balance} ${a.currency}${a.is_archived ? ' [ARCHIVED]' : ''}`).join('\n') : 'None'}
+
+**Monthly Budgets:**
+${globalContext.finance?.budgets?.length ? globalContext.finance.budgets.map(b => `- ${b.category}: ${b.monthly_limit}/month (alert at ${b.alert_threshold_pct || 80}%)`).join('\n') : 'None'}
+
+**Financial Goals:**
+${globalContext.finance?.goals?.length ? globalContext.finance.goals.map(g => `- ${g.title}: ${g.current_amount}/${g.target_amount}${g.target_date ? ` (deadline: ${g.target_date})` : ''}`).join('\n') : 'None'}
+
+**Active Life Goals (for cross-referencing):**
+${globalContext.lifeGoals?.length ? globalContext.lifeGoals.map(g => `- [${g.category}] ${g.title} (Priority: ${g.priority})`).join('\n') : 'None'}
+
+**Active Habits:**
+${globalContext.habits?.length ? globalContext.habits.map(h => `- ${h.name}`).join('\n') : 'None'}
+
+**Pending Tasks & Commitments:**
+${globalContext.todos?.length ? globalContext.todos.map(t => `- ${t.title}`).join('\n') : 'None'}
+${globalContext.delegation?.length ? globalContext.delegation.map(d => `- (Delegated) ${d.title}`).join('\n') : ''}
+
+**Mental State (Recent Journal):**
+${globalContext.journal?.length ? globalContext.journal.map(j => `- [${j.date}] ${j.content?.substring(0, 150)}...`).join('\n') : 'None'}
+
+**Recent SMS (for transaction/payment context):**
+${globalContext.sms?.length ? globalContext.sms.map(s => `- [${s.type === '1' ? 'Received' : 'Sent'}] ${s.address}: ${(s.body || '').substring(0, 150)}`).join('\n') : 'None'}
+-------------------------------------------------
+        `;
+    }
+
+    const prompt = `
+You are a strict, highly knowledgeable personal financial advisor AI. The user has given you full access to their financial data, life goals, habits, and recent activity. Use ALL of this data to give deeply personalized, actionable financial advice.
+
+${contextBlock}
+
+${conversationHistory ? `Previous conversation:\n${conversationHistory}\n` : ''}
+
+User's question: "${question}"
+
+RULES:
+- Be specific. Reference their actual account names, balances, budget categories, and goal amounts.
+- If they ask about savings, calculate actual numbers based on their data.
+- If they have financial goals with deadlines, calculate whether they're on track (monthly savings needed vs actual progress).
+- Cross-reference with their life goals — if a life goal needs money, factor it in.
+- If SMS messages contain transaction alerts or payment confirmations, factor those into your analysis.
+- Be honest and direct. If their spending is unsustainable, say so.
+- Use markdown formatting: headers (##, ###), bold, bullet points.
+- Keep responses focused and actionable — no generic platitudes.
+- Do NOT say you don't have access to their data. The data is provided above.
+`;
+
+    const url = `https://api.groq.com/openai/v1/chat/completions`;
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+            model: 'openai/gpt-oss-120b',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.6
         })
     });
 
